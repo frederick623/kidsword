@@ -1,0 +1,33 @@
+{
+  "name": "kidsword-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "bench": "tsx scripts/benchmark.ts",
+    "golden:update": "tsx scripts/update-golden.ts",
+    "cap:sync": "npm run build && cap sync",
+    "cap:android": "npm run build && cap sync android && cap open android",
+    "cap:ios": "npm run build && cap sync ios && cap open ios"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
+    "@types/node": "^26.6.7",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  },
+  "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
+    "@capacitor/preferences": "^8.0.1"
+  }
+}

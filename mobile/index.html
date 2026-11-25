@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#4F46E5" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws:; object-src 'none'; base-uri 'self'; form-action 'none'" />
+  <title>KidsWord - Word Worlds Crossword</title>
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">K</div>
+      <div>
+        <div>KidsWord</div>
+        <div class="brand-sub">Word Worlds (Grades 1-6)</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs" aria-label="Main sections">
+      <button class="nav-btn active" data-tab="worlds">&#x1F5FA;&#xFE0F; Worlds</button>
+      <button class="nav-btn" data-tab="play">&#x1F9E9; Play</button>
+      <button class="nav-btn" data-tab="collection">&#x1F4D6; Word Book</button>
+      <button class="nav-btn" data-tab="classroom">&#x1F3EB; Class Code</button>
+      <button class="nav-btn" data-tab="grownups">&#x1F512; Grown-Ups</button>
+    </nav>
+
+    <div class="status-pills">
+      <button class="pill" id="btn-dyslexia" title="Toggle dyslexia-friendly spacing">Aa Font</button>
+      <button class="pill" id="btn-contrast" title="Toggle color-blind safe symbols">&#x1F3A8; Contrast</button>
+      <div class="pill stars" aria-live="polite">&#x2B50; <span id="star-count">20</span></div>
+      <div class="pill online">&#x25CF; Works Offline</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. WORD WORLDS HUB -->
+    <section class="view active" id="view-worlds" aria-labelledby="worlds-heading">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1 id="worlds-heading">Welcome back, <span id="hero-nickname">StarExplorer</span>! &#x1F31F;</h1>
+          <p>Pick your grade, choose a Word World, and solve clues to collect stars!</p>
+          <div class="controls-bar">
+            <label for="select-band" class="ctl-label">Grade:</label>
+            <select class="select-pill" id="select-band" aria-label="Select Grade Band">
+              <option value="G1_2">Grades 1-2 (Picture + Audio)</option>
+              <option value="G3_4">Grades 3-4 (Definitions)</option>
+              <option value="G5_6">Grades 5-6 (Synonyms)</option>
+            </select>
+            <label for="select-difficulty" class="ctl-label">Level:</label>
+            <select class="select-pill" id="select-difficulty" aria-label="Select Difficulty">
+              <option value="easy">&#x1F331; Easy</option>
+              <option value="medium" selected>&#x2B50; Medium</option>
+              <option value="hard">&#x1F680; Challenge</option>
+            </select>
+          </div>
+        </div>
+        <div class="controls-bar">
+          <button class="action-btn gold" id="btn-daily">&#x1F4C5; Today's Mini Puzzle</button>
+          <button class="action-btn secondary" id="btn-review">&#x1F501; Practice Review Words</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">Choose a Word World</h2>
+      <div class="worlds-grid" id="worlds-grid"></div>
+    </section>
+
+    <!-- 2. CROSSWORD PLAY SCREEN -->
+    <section class="view" id="view-play" aria-label="Crossword Puzzle">
+      <div class="play-layout">
+        <div class="board-card">
+          <div class="play-header">
+            <div>
+              <span class="badge" id="play-badge-theme"></span>
+              <span class="badge" id="play-badge-band"></span>
+              <span class="badge" id="play-badge-diff"></span>
+            </div>
+            <button class="action-btn secondary small" id="btn-new-puzzle">&#x1F3B2; New Puzzle</button>
+          </div>
+
+          <div class="active-clue-banner">
+            <div class="clue-emoji" id="active-clue-emoji" aria-hidden="true">&#x2728;</div>
+            <div class="clue-main">
+              <div class="clue-dir-tag" id="active-clue-dir"></div>
+              <div class="clue-text" id="active-clue-text">Tap a square to start solving!</div>
+              <div class="clue-sentence" id="active-clue-sentence"></div>
+            </div>
+            <button class="speak-btn" id="btn-speak-clue" aria-label="Read clue aloud">&#x1F50A;</button>
+          </div>
+
+          <div class="grid-wrapper">
+            <div class="crossword-grid" id="crossword-grid" role="grid" aria-label="Crossword Grid"></div>
+          </div>
+
+          <div class="hint-toolbar" aria-label="Helpful Hints">
+            <button class="hint-btn" id="hint-letter">&#x1F4A1; Letter (2&#x2B50;)</button>
+            <button class="hint-btn" id="hint-check">&#x1F50D; Check (1&#x2B50;)</button>
+            <button class="hint-btn" id="hint-word">&#x2728; Word (5&#x2B50;)</button>
+            <button class="hint-btn alt" id="btn-toggle-dir">&#x2194;&#xFE0F; Across/Down</button>
+          </div>
+
+          <div class="kid-keyboard" id="kid-keyboard" aria-label="Letter Keyboard"></div>
+        </div>
+
+        <aside class="clues-panel">
+          <div class="clue-box">
+            <h3>&#x27A1;&#xFE0F; Across</h3>
+            <div class="clue-list" id="clues-across"></div>
+          </div>
+          <div class="clue-box">
+            <h3>&#x2B07;&#xFE0F; Down</h3>
+            <div class="clue-list" id="clues-down"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 3. WORD BOOK -->
+    <section class="view" id="view-collection" aria-labelledby="collection-heading">
+      <div class="panel-card mb">
+        <div class="row-between">
+          <div>
+            <h2 id="collection-heading">&#x1F4D6; My Word Collection</h2>
+            <p class="muted">Tap the speaker on any card to hear the word and its meaning.</p>
+          </div>
+          <span class="badge" id="collection-stats-badge">0 Words Collected</span>
+        </div>
+      </div>
+      <div class="collection-grid" id="collection-grid"></div>
+    </section>
+
+    <!-- 4. CLASSROOM -->
+    <section class="view" id="view-classroom" aria-labelledby="classroom-heading">
+      <div class="panel-card narrow">
+        <h2 id="classroom-heading">&#x1F3EB; Classroom Word List</h2>
+        <p class="muted mb-s">
+          Type your class code, or paste the <strong>share code</strong> (starts with <code>KW1.</code>) your teacher sent.
+          Try the sample code <strong>SPACE1</strong>.
+        </p>
+        <div class="form-row">
+          <label for="input-class-code">Class code or share code</label>
+          <textarea id="input-class-code" rows="2" maxlength="6000" spellcheck="false" autocapitalize="off" autocomplete="off">SPACE1</textarea>
+        </div>
+        <button class="action-btn" id="btn-join-class">&#x1F680; Play Classroom Puzzle</button>
+
+        <hr class="divider" />
+        <h3 class="mb-s">Class Puzzles on This Device</h3>
+        <div id="available-codes-list" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- 5. GROWN-UPS -->
+    <section class="view" id="view-grownups" aria-labelledby="grownups-heading">
+      <div class="panel-card narrow center" id="parental-gate-card">
+        <div class="big-emoji">&#x1F512;</div>
+        <h2 id="grownups-heading">Grown-Ups &amp; Teachers Area</h2>
+        <p class="muted mb-s">Please solve this quick grown-up check to open Parent Insights, Teacher tools, and the Word Studio.</p>
+        <div id="gate-question" class="gate-question"></div>
+        <div class="gate-row">
+          <input type="number" inputmode="numeric" id="gate-answer" placeholder="Answer" aria-label="Grown-up check answer" />
+          <button class="action-btn" id="btn-unlock-gate">Unlock</button>
+        </div>
+        <p id="gate-error" class="error-text"></p>
+      </div>
+
+      <div id="grownups-dashboard" hidden>
+        <div class="panel-card mb privacy-card">
+          <strong>&#x1F6E1;&#xFE0F; Privacy Promise:</strong>
+          No ads, no links, no chat, no accounts, no internet. Everything stays on this device under a nickname only.
+        </div>
+
+        <div class="two-col">
+          <div class="panel-card">
+            <h3>&#x1F468;&#x200D;&#x1F469;&#x200D;&#x1F467; Parent Progress Summary</h3>
+            <div class="stat-grid">
+              <div class="stat"><div class="stat-num" id="parent-stat-puzzles">0</div><div class="stat-label">Puzzles Solved</div></div>
+              <div class="stat"><div class="stat-num green" id="parent-stat-words">0</div><div class="stat-label">Words Learned</div></div>
+              <div class="stat"><div class="stat-num gold" id="parent-stat-stars">20</div><div class="stat-label">Stars Banked</div></div>
+            </div>
+            <div class="form-row">
+              <label for="input-nickname">Explorer Nickname (no real names needed)</label>
+              <div class="inline-row">
+                <input type="text" id="input-nickname" maxlength="20" />
+                <button class="action-btn secondary" id="btn-save-nickname">Save</button>
+              </div>
+            </div>
+            <h4 class="mt-s">Words Needing Extra Practice</h4>
+            <div id="parent-hard-words" class="muted">Solve a few puzzles to see practice insights!</div>
+          </div>
+
+          <div class="panel-card">
+            <h3>&#x1F34E; Teacher: Create Classroom Crossword</h3>
+            <p class="muted small-text mb-s">Enter 3-20 words, one per line as <code>WORD: Kid-friendly clue</code>. You get a share code to send to students.</p>
+            <div class="form-row">
+              <label for="teacher-title">Assignment Title</label>
+              <input type="text" id="teacher-title" maxlength="60" value="Forest Habitat Spelling" />
+            </div>
+            <div class="form-row two-inputs">
+              <div>
+                <label for="teacher-name">Teacher Name</label>
+                <input type="text" id="teacher-name" maxlength="40" value="Ms. Lin" />
+              </div>
+              <div>
+                <label for="teacher-band">Grade Band</label>
+                <select id="teacher-band">
+                  <option value="G1_2">Grades 1-2</option>
+                  <option value="G3_4" selected>Grades 3-4</option>
+                  <option value="G5_6">Grades 5-6</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="teacher-words">Words &amp; Clues</label>
+              <textarea id="teacher-words" rows="5">FOREST: A large woodland filled with tall trees
+RIVER: Fresh water flowing steadily toward the sea
+OTTER: Playful furry swimmer that floats on its back
+ACORN: Smooth nut that falls from an oak tree
+MOSS: Soft green plant carpet growing on damp logs</textarea>
+            </div>
+            <button class="action-btn" id="btn-create-assignment">&#x2728; Create Class Puzzle</button>
+            <div id="teacher-result" class="mt-s"></div>
+          </div>
+        </div>
+
+        <div class="panel-card mt">
+          <h3>&#x1F4DA; Word Studio (add words to this device)</h3>
+          <p class="muted small-text mb-s">Safety blocklist, answer-leak and readability checks run automatically on save.</p>
+          <div class="studio-grid">
+            <div class="form-row"><label for="admin-word">Word (A-Z)</label><input type="text" id="admin-word" maxlength="12" placeholder="COMPASS" /></div>
+            <div class="form-row">
+              <label for="admin-grade">Grade</label>
+              <select id="admin-grade">
+                <option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option>
+                <option value="4" selected>Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option>
+              </select>
+            </div>
+            <div class="form-row"><label for="admin-themes">Themes (comma-separated)</label><input type="text" id="admin-themes" value="science,nature" /></div>
+            <div class="form-row"><label for="admin-emoji">Picture Emoji</label><input type="text" id="admin-emoji" value="&#x1F9ED;" maxlength="8" /></div>
+          </div>
+          <div class="form-row"><label for="admin-def">Kid-friendly clue (must not contain the word)</label><input type="text" id="admin-def" maxlength="160" placeholder="A magnetic tool with a needle that points north." /></div>
+          <div class="form-row"><label for="admin-sentence">Fill-in-the-blank sentence</label><input type="text" id="admin-sentence" maxlength="160" placeholder="Hikers used a ___ to find north on the trail." /></div>
+          <button class="action-btn" id="btn-admin-save-word">&#x2705; Validate &amp; Save Word</button>
+          <span id="admin-save-msg" class="status-msg"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="win-modal" role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <div class="modal-card">
+      <div class="big-emoji">&#x1F389;&#x1F31F;&#x1F3C6;</div>
+      <h2 id="win-title">Awesome Solving!</h2>
+      <p id="win-summary" class="muted"></p>
+      <div class="pill stars win-pill" id="win-stars-pill"></div>
+      <div class="learned-chips" id="win-words-list"></div>
+      <div class="modal-actions">
+        <button class="action-btn" id="btn-win-next">&#x1F680; Next Puzzle</button>
+        <button class="action-btn secondary" id="btn-win-worlds">&#x1F5FA;&#xFE0F; Word Worlds</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
